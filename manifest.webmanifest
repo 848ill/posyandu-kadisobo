@@ -1,0 +1,20 @@
+{
+  "name": "Catat Posyandu Kadisobo",
+  "short_name": "Posyandu",
+  "description": "Alat bantu pencatatan penimbangan Posyandu untuk kader Padukuhan Kadisobo. Data tersimpan di perangkat sendiri.",
+  "id": "/catat-posyandu/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#EDE3D0",
+  "theme_color": "#3B5F3A",
+  "lang": "id",
+  "dir": "ltr",
+  "categories": ["health", "productivity", "utilities"],
+  "icons": [
+    { "src": "./icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "./icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

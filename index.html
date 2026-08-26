@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Portal Posyandu Melati (Nyawiji)</title>
+  <style>
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background-color: #f0fdf4; /* Warna hijau lembut ala kesehatan */
+      margin: 0; 
+      padding: 20px; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+    }
+    h2 { color: #166534; margin-top: 0; text-align: center; }
+    p.subtitle { text-align: center; color: #4b5563; margin-bottom: 24px; font-size: 14px; }
+    
+    .form-group { margin-bottom: 20px; }
+    label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 16px;
+      background-color: #f9fafb;
+    }
+    
+    .btn-masuk {
+      display: block;
+      width: 100%;
+      padding: 14px;
+      background: #16a34a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-masuk:hover { background: #15803d; }
+    .btn-masuk:disabled { background: #9ca3af; cursor: not-allowed; }
+
+    /* Sembunyikan pilihan nama sebelum divisi dipilih */
+    #divNamaKader { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>Posyandu Melati</h2>
+    <p class="subtitle">Dusun Kadisobo • Aplikasi Pencatatan Offline</p>
+
+    <div class="form-group">
+      <label for="pilihDivisi">1. Pilih Divisi / Peran Anda:</label>
+      <select id="pilihDivisi" onchange="updateNamaKader()">
+        <option value="">-- Ketuk untuk memilih --</option>
+        <option value="balita">👶 Kader Balita</option>
+        <option value="lansia">👴 Kader Lansia</option>
+        <option value="remaja">🧑 Kader Remaja</option>
+        <option value="produktif">👩 Kader Usia Produktif</option>
+        <option value="rekap">📊 Pimpinan / Rekap Data (Ketua & Sekretaris)</option>
+      </select>
+    </div>
+
+    <div class="form-group" id="divNamaKader">
+      <label for="pilihNama">2. Siapa Nama Anda?</label>
+      <select id="pilihNama" onchange="cekForm()">
+        <option value="">-- Ketuk untuk memilih --</option>
+      </select>
+    </div>
+
+    <button id="btnMasuk" class="btn-masuk" disabled onclick="masukAplikasi()">Masuk ke Buku Catatan</button>
+  </div>
+
+  <script>
+    // Database lokal nama-nama pengurus
+    const dataKader = {
+      balita: ["Puput Bernardika", "Eni Purwanti", "Rini Purwanti"],
+      lansia: ["Seriyati", "Karyanti", "Latri Lestari"],
+      remaja: ["Harni Astuti", "Nurul Suciati"],
+      produktif: ["Windarti", "Siti Handayani"],
+      rekap: ["Sumarmiyati (Ketua)", "Rahayuningsih (Wakil)", "Surahayu (Sekretaris 1)", "Sri Nuriyani (Sekretaris 2)"]
+    };
+
+    const pemetaanHalaman = {
+      balita: "balita.html",
+      lansia: "lansia.html",
+      remaja: "remaja.html",
+      produktif: "usia-produktif.html",
+      rekap: "rekap.html"
+    };
+
+    function updateNamaKader() {
+      const divisi = document.getElementById("pilihDivisi").value;
+      const selectNama = document.getElementById("pilihNama");
+      const divNama = document.getElementById("divNamaKader");
+      const btnMasuk = document.getElementById("btnMasuk");
+      
+      selectNama.innerHTML = '<option value="">-- Ketuk untuk memilih --</option>';
+      btnMasuk.disabled = true;
+
+      if (divisi && dataKader[divisi]) {
+        dataKader[divisi].forEach(nama => {
+          const opt = document.createElement("option");
+          opt.value = nama;
+          opt.textContent = nama;
+          selectNama.appendChild(opt);
+        });
+        divNama.style.display = "block";
+      } else {
+        divNama.style.display = "none";
+      }
+    }
+
+    function cekForm() {
+      const nama = document.getElementById("pilihNama").value;
+      document.getElementById("btnMasuk").disabled = (nama === "");
+    }
+
+    function masukAplikasi() {
+      const divisi = document.getElementById("pilihDivisi").value;
+      const nama = document.getElementById("pilihNama").value;
+
+      // Simpan sesi ke memori HP (Local Storage)
+      localStorage.setItem("sesi_posyandu_divisi", divisi);
+      localStorage.setItem("sesi_posyandu_nama", nama);
+      localStorage.setItem("sesi_posyandu_waktu_login", new Date().toISOString());
+
+      // Pindah ke halaman modul masing-masing
+      window.location.href = pemetaanHalaman[divisi];
+    }
+
+    // Auto-redirect kalau sebelumnya udah pernah login (biar kader gak perlu login tiap buka app)
+    window.onload = () => {
+      const sesiDivisi = localStorage.getItem("sesi_posyandu_divisi");
+      if(sesiDivisi && pemetaanHalaman[sesiDivisi]) {
+        // Kalau mau paksa login tiap buka, hapus blok IF ini.
+        // window.location.href = pemetaanHalaman[sesiDivisi]; 
+      }
+    }
+  </script>
+</body>
+</html>
