@@ -835,9 +835,11 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
   }
   function closeSheets(){
     ["sheetKid","sheetForm","sheetWeigh","sheetAnalisis","sheetSesi"].forEach(function(i){
-      document.getElementById(i).classList.remove("on");
+      var el = document.getElementById(i);
+      if(el) el.classList.remove("on");
     });
-    document.getElementById("scrim").classList.remove("on");
+    var scrim = document.getElementById("scrim");
+    if(scrim) scrim.classList.remove("on");
     document.body.style.overflow = "";
     openKid = null; editingKid = null; editingWeigh = null; fromSesi = false;
   }
