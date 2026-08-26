@@ -10,6 +10,11 @@
   <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
   <style>
+    .scrim { position: fixed; inset: 0; background: rgba(58,46,38,.45); z-index: 40; display: none; }
+.scrim.on { display: block; }
+.sheet { position: fixed; inset: 0; z-index: 50; background: var(--krem); overflow-y: auto; display: none; }
+.sheet.on { display: block; }
+.sheet-top { position: sticky; top: 0; background: var(--krem); z-index: 60; display: flex; align-items: center; gap: 11px; padding: 12px 15px; border-bottom: 1px solid var(--garis); }
     :root {
       --daun: #3B5F3A; --daun-t: #4E7449; --tera: #C06B4A; --krem: #EDE3D0;
       --kuning: #D9A94E; --kopi: #3A2E26; --kopi-2: #6E5D50; --kopi-3: #9C8B7C;
