@@ -591,12 +591,7 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
   </p>
 </main>
 
-<div class="bar">
-  <div class="bar-in">
-    <button class="btn primary" id="openSesi" type="button" style="flex:1">Hari buka Posyandu</button>
-    <button class="btn ghost" id="addKid" type="button">+ Anak</button>
-  </div>
-</div>
+
 <input type="file" id="file" accept=".csv,text/csv" hidden>
 
 <div class="scrim" id="scrim"></div>
@@ -1698,7 +1693,7 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
 
   /* ---------------- boot ---------------- */
   if(!load()){
-    state = { kids: sampleData(), sample: true };
+    state = { kids: [], sample: true };
     save();
   }
   render();
