@@ -1,98 +1,128 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Portal Posyandu Melati (Nyawiji)</title>
-  <style>
-    body { 
-      font-family: system-ui, -apple-system, sans-serif; 
-      background-color: #f0fdf4; /* Warna hijau lembut ala kesehatan */
-      margin: 0; 
-      padding: 20px; 
-      display: flex; 
-      flex-direction: column; 
-      align-items: center; 
-      min-height: 100vh;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-    h2 { color: #166534; margin-top: 0; text-align: center; }
-    p.subtitle { text-align: center; color: #4b5563; margin-bottom: 24px; font-size: 14px; }
-    
-    .form-group { margin-bottom: 20px; }
-    label { display: block; margin-bottom: 8px; font-weight: 600; color: #374151; }
-    select {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-      background-color: #f9fafb;
-    }
-    
-    .btn-masuk {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: #16a34a;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .btn-masuk:hover { background: #15803d; }
-    .btn-masuk:disabled { background: #9ca3af; cursor: not-allowed; }
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Portal Posyandu — Kadisobo</title>
+  <meta name="theme-color" content="#3B5F3A">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icons/favicon-64.png" sizes="64x64" type="image/png">
+  <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
 
-    /* Sembunyikan pilihan nama sebelum divisi dipilih */
+  <style>
+    :root {
+      --daun: #3B5F3A; --daun-t: #4E7449; --tera: #C06B4A; --krem: #EDE3D0;
+      --kuning: #D9A94E; --kopi: #3A2E26; --kopi-2: #6E5D50; --kopi-3: #9C8B7C;
+      --kertas: #FBF6EA; --garis: #DCCFB6; --garis-2: #EADDC5;
+      --tap: 48px;
+      --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+      --serif: 'Fraunces', Georgia, 'Times New Roman', serif;
+    }
+    * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: var(--krem); color: var(--kopi); font: 400 16px/1.55 var(--sans);
+      -webkit-text-size-adjust: 100%; min-height: 100vh;
+    }
+    body::before {
+      content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: .5;
+      background-image: radial-gradient(circle at 1px 1px, rgba(58,46,38,.05) 1px, transparent 0);
+      background-size: 14px 14px;
+    }
+    body > * { position: relative; z-index: 1; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 0 15px; }
+
+    header { position: sticky; top: 0; z-index: 30; background: var(--daun); color: var(--krem); padding: 15px 0; }
+    .brand { display: flex; align-items: center; gap: 11px; justify-content: center; text-align: center; }
+    .brand h1 { margin: 0; font: 700 21px/1 var(--serif); letter-spacing: -.4px; }
+    .brand span { display: block; font: 600 10px/1 var(--sans); letter-spacing: .16em; text-transform: uppercase; opacity: .72; margin-top: 5px; }
+    .brushedge { display: block; width: 100%; height: 15px; margin-top: -1px; position: sticky; top: 0; z-index: 29; }
+
+    .panel {
+      background: var(--kertas); border: 1px solid var(--garis);
+      border-radius: 18px 6px 16px 8px; padding: 24px 15px; margin-top: 30px;
+      box-shadow: 0 1px 1px rgba(58,46,38,.04), 0 2px 5px rgba(58,46,38,.045);
+    }
+    .panel h2 { margin: 0 0 16px; font: 700 17px/1.2 var(--serif); color: var(--kopi); text-align: center; }
+    
+    .field { margin-bottom: 16px; }
+    label { display: block; font: 600 12.5px var(--sans); color: var(--kopi-2); margin: 0 0 6px; }
+    
+    /* Clean Select for Mobile */
+    select {
+      width: 100%; min-height: var(--tap); border: 1px solid var(--garis); border-radius: 14px 6px 13px 6px;
+      padding: 0 40px 0 14px; font: 400 16px var(--sans); color: var(--kopi); background: var(--kertas);
+      -webkit-appearance: none; appearance: none;
+      background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%233A2E26' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: right 14px center;
+      box-shadow: inset 0 1px 2px rgba(58,46,38,.05);
+      transition: box-shadow .15s ease, border-color .15s ease;
+    }
+    select:focus { outline: 3px solid var(--daun); outline-offset: 1px; border-color: var(--daun); }
+
+    .btn {
+      width: 100%; min-height: var(--tap); border-radius: 15px 6px 14px 7px; font: 600 15px var(--sans);
+      cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      background: var(--daun); color: var(--krem); border: 0;
+      box-shadow: 0 1px 2px rgba(58,46,38,.16), inset 0 1px 0 rgba(255,255,255,.13);
+      transition: transform .14s ease, background-color .14s ease;
+    }
+    .btn:active { background: #33532F; transform: translateY(1px) scale(.994); }
+    .btn:disabled { background: var(--kopi-3); cursor: not-allowed; box-shadow: none; opacity: 0.7; }
+    
     #divNamaKader { display: none; }
   </style>
 </head>
 <body>
 
-  <div class="container">
-    <h2>Posyandu Melati</h2>
-    <p class="subtitle">Dusun Kadisobo • Aplikasi Pencatatan Offline</p>
-
-    <div class="form-group">
-      <label for="pilihDivisi">1. Pilih Divisi / Peran Anda:</label>
-      <select id="pilihDivisi" onchange="updateNamaKader()">
-        <option value="">-- Ketuk untuk memilih --</option>
-        <option value="balita">👶 Kader Balita</option>
-        <option value="lansia">👴 Kader Lansia</option>
-        <option value="remaja">🧑 Kader Remaja</option>
-        <option value="produktif">👩 Kader Usia Produktif</option>
-        <option value="rekap">📊 Pimpinan / Rekap Data (Ketua & Sekretaris)</option>
-      </select>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <div>
+          <h1>Posyandu Melati</h1>
+          <span>Akar Asa &middot; Kadisobo</span>
+        </div>
+      </div>
     </div>
+  </header>
+  <svg class="brushedge" viewBox="0 0 1200 15" preserveAspectRatio="none" aria-hidden="true">
+    <path fill="#3B5F3A" d="M0 0h1200v6.2c-48 3.1-92 1.2-141 3.4-63 2.8-108-2.1-171-.6-58 1.4-99 4.6-157 3.1-71-1.9-116-5.2-187-3.4-52 1.3-88 4.2-140 3-49-1.1-84-3.9-133-2.7-31 .8-53 2.4-84 3.2-64 1.6-119-1.5-187-2.1z"/>
+  </svg>
 
-    <div class="form-group" id="divNamaKader">
-      <label for="pilihNama">2. Siapa Nama Anda?</label>
-      <select id="pilihNama" onchange="cekForm()">
-        <option value="">-- Ketuk untuk memilih --</option>
-      </select>
+  <main class="wrap">
+    <div class="panel">
+      <h2>Pilih Buku Catatan</h2>
+
+      <div class="field">
+        <label for="pilihDivisi">1. Apa peran Anda?</label>
+        <select id="pilihDivisi" onchange="updateNamaKader()">
+          <option value="">-- Ketuk untuk memilih --</option>
+          <option value="balita">👶 Kader Balita</option>
+          <option value="lansia">👴 Kader Lansia</option>
+          <option value="remaja">🧑 Kader Remaja</option>
+          <option value="produktif">👩 Kader Usia Produktif</option>
+          <option value="rekap">📊 Rekap / Pimpinan</option>
+        </select>
+      </div>
+
+      <div class="field" id="divNamaKader">
+        <label for="pilihNama">2. Siapa nama Anda?</label>
+        <select id="pilihNama" onchange="cekForm()">
+          <option value="">-- Ketuk untuk memilih --</option>
+        </select>
+      </div>
+
+      <button id="btnMasuk" class="btn primary" disabled onclick="masukAplikasi()">Masuk Aplikasi</button>
     </div>
-
-    <button id="btnMasuk" class="btn-masuk" disabled onclick="masukAplikasi()">Masuk ke Buku Catatan</button>
-  </div>
+  </main>
 
   <script>
-    // Database lokal nama-nama pengurus
     const dataKader = {
       balita: ["Puput Bernardika", "Eni Purwanti", "Rini Purwanti"],
       lansia: ["Seriyati", "Karyanti", "Latri Lestari"],
       remaja: ["Harni Astuti", "Nurul Suciati"],
       produktif: ["Windarti", "Siti Handayani"],
-      rekap: ["Sumarmiyati (Ketua)", "Rahayuningsih (Wakil)", "Surahayu (Sekretaris 1)", "Sri Nuriyani (Sekretaris 2)"]
+      rekap: ["Sumarmiyati (Ketua)", "Rahayuningsih (Wakil)", "Surahayu (Sek)", "Sri Nuriyani (Sek)"]
     };
 
     const pemetaanHalaman = {
@@ -134,22 +164,10 @@
       const divisi = document.getElementById("pilihDivisi").value;
       const nama = document.getElementById("pilihNama").value;
 
-      // Simpan sesi ke memori HP (Local Storage)
       localStorage.setItem("sesi_posyandu_divisi", divisi);
       localStorage.setItem("sesi_posyandu_nama", nama);
-      localStorage.setItem("sesi_posyandu_waktu_login", new Date().toISOString());
-
-      // Pindah ke halaman modul masing-masing
+      
       window.location.href = pemetaanHalaman[divisi];
-    }
-
-    // Auto-redirect kalau sebelumnya udah pernah login (biar kader gak perlu login tiap buka app)
-    window.onload = () => {
-      const sesiDivisi = localStorage.getItem("sesi_posyandu_divisi");
-      if(sesiDivisi && pemetaanHalaman[sesiDivisi]) {
-        // Kalau mau paksa login tiap buka, hapus blok IF ini.
-        // window.location.href = pemetaanHalaman[sesiDivisi]; 
-      }
     }
   </script>
 </body>
