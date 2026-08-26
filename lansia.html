@@ -1495,44 +1495,6 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
     setTimeout(function(){ URL.revokeObjectURL(url); }, 1200);
   }
 
-  /* ---------------- sample data ---------------- */
-  function sampleData(){
-    var names = [
-      ["Alifah Nur Aini","P"],["Bagas Prasetyo","L"],["Citra Ayu Lestari","P"],["Damar Saputra","L"],
-      ["Erlina Wulandari","P"],["Fajar Nugroho","L"],["Gita Maharani","P"],["Hafiz Ramadhan","L"],
-      ["Intan Permata","P"],["Joko Susilo","L"],["Kirana Dewi","P"],["Lukman Hakim","L"],
-      ["Mila Anggraini","P"],["Naufal Ardiansyah","L"],["Oktavia Rahmawati","P"],["Panji Wicaksono","L"],
-      ["Qonita Salsabila","P"],["Rizky Firmansyah","L"],["Sekar Ayu Pertiwi","P"],["Tegar Pambudi","L"]
-    ];
-    var now = new Date();
-    return names.map(function(n, idx){
-      var ageM = 6 + (idx * 7) % 48;
-      var lahir = new Date(now.getFullYear(), now.getMonth() - ageM, 5 + (idx % 22));
-      var visits = 3 + (idx % 4);
-      var skip = idx % 5 === 0 ? 2 : 0;
-      var base = 6.2 + ageM * 0.19 + (idx % 5) * 0.28;
-      var t = [];
-      for(var v = visits - 1; v >= 0; v--){
-        var d = new Date(now.getFullYear(), now.getMonth() - v - skip, 12);
-        var drift = (idx + v) % 6 === 0 ? -0.15 : 0.18 + ((idx + v) % 3) * 0.07;
-        base = Math.max(3.5, base + (v === visits - 1 ? 0 : drift));
-        t.push({
-          tanggal: d.toISOString().slice(0,10),
-          berat: Math.round(base * 10) / 10,
-          tinggi: Math.round((49 + ageM * 1.05 - v * 0.8) * 10) / 10,
-          lk: Math.round((35 + ageM * 0.28) * 10) / 10
-        });
-      }
-      if(idx % 7 === 3 && t.length >= 3){
-        t[t.length-2].berat = Math.round((t[t.length-3].berat - 0.1) * 10) / 10;
-        t[t.length-1].berat = Math.round((t[t.length-2].berat - 0.1) * 10) / 10;
-      }
-      if(idx % 9 === 4 && t.length) t[t.length-1].bgm = true;
-      return { id: uid(), nama: n[0], jk: n[1],
-               lahir: lahir.toISOString().slice(0,10),
-               rt: String(1 + (idx % 6)).padStart(2,"0"), catatan: "", timbang: t };
-    });
-  }
 
   /* ---------------- events ---------------- */
   document.getElementById("period").value = today().slice(0,7);
