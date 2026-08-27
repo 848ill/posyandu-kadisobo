@@ -1633,8 +1633,10 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
         state.kids = kids; state.sample = false;
         save(); render(); toast(kids.length + " anak berhasil dipulihkan");
       }catch(err){
-        toast("Berkas tidak bisa dibaca. Pastikan itu berkas cadangan dari aplikasi ini.");
+        // Kita munculkan pesan error aslinya ke layar biar ketahuan!
+        toast("Error aslinya: " + err.message); 
       }
+      
     };
     r.onerror = function(){ toast("Berkas gagal dibuka"); };
     r.readAsText(f, "utf-8");
