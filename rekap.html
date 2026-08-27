@@ -1454,8 +1454,22 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
     var sep = (head.split(";").length >= head.split(",").length) ? ";" : ",";
     var rows = parseCSV(text, sep);
     if(rows.length < 2) throw new Error("kosong");
+    
     var map = {};
-    rows.shift().forEach(function(h,i){ map[h.trim().toLowerCase()] = i; });
+    rows.shift().forEach(function(h,i){ 
+      var cleanHeader = h.trim().toLowerCase();
+      map[cleanHeader] = i; 
+      
+      // BIKIN ALIAS: Biar sistem tetep ngenalin kolom walau nama di file-nya beda/disingkat
+      if(cleanHeader.includes("tanggal") && !cleanHeader.includes("lahir")) map["tanggal timbang"] = i;
+      if(cleanHeader.includes("berat")) map["berat (kg)"] = i;
+      if(cleanHeader.includes("tinggi")) map["tinggi (cm)"] = i;
+      if(cleanHeader.includes("lingkar") || cleanHeader === "lk") map["lingkar kepala (cm)"] = i;
+      if(cleanHeader.includes("kelamin") || cleanHeader === "l/p" || cleanHeader === "jk") map["jenis kelamin"] = i;
+      if(cleanHeader === "id") map["id anak"] = i;
+    });
+    
+    // Syarat wajib: Minimal harus ada kolom nama dan tanggal
     if(map["nama"] == null || map["tanggal timbang"] == null) throw new Error("format");
 
     var byId = {};
@@ -1463,23 +1477,40 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
       var get = function(n){ var i = map[n]; return i == null ? "" : (r[i]||"").trim(); };
       var nama = get("nama"); if(!nama) return;
       var id = get("id anak") || uid();
+      
       if(!byId[id]){
         var cat = get("catatan"), rt = get("rt");
         if(!rt){ var m = /RT\s*0*(\d{1,3})/i.exec(cat); if(m){ rt = m[1].padStart(2,"0"); cat = cat.replace(m[0],"").trim(); } }
         byId[id] = { id:id, nama:nama, jk:(get("jenis kelamin")==="P"?"P":"L"), rt:rt,
                      lahir:get("tanggal lahir"), catatan:cat, timbang:[] };
       }
-      var tgl = get("tanggal timbang"), berat = num(get("berat (kg)"));
+      
+      var tgl = get("tanggal timbang");
+      
+      // KUNCI PERBAIKAN DESIMAL: Ubah koma (8,5) balik jadi titik (8.5) dulu sebelum dibaca angka
+      var rawBerat = get("berat (kg)").replace(",", ".");
+      var rawTinggi = get("tinggi (cm)").replace(",", ".");
+      var rawLk = get("lingkar kepala (cm)").replace(",", ".");
+      
+      var berat = num(rawBerat);
+      var tinggi = num(rawTinggi);
+      var lk = num(rawLk);
+      
       if(tgl && berat != null){
-        byId[id].timbang.push({ tanggal:tgl, berat:berat,
-          tinggi:num(get("tinggi (cm)")), lk:num(get("lingkar kepala (cm)")),
-          bgm: /^(ya|y|1|true)$/i.test(get("bgm")) });
+        byId[id].timbang.push({ 
+          tanggal: tgl, 
+          berat: berat,
+          tinggi: tinggi, 
+          lk: lk,
+          bgm: /^(ya|y|1|true)$/i.test(get("bgm")) 
+        });
       }
     });
+    
     var kids = Object.keys(byId).map(function(k){ return byId[k]; });
     if(!kids.length) throw new Error("kosong");
     return kids;
-  }
+}
   function download(name, text){
     var blob = new Blob([text], {type:"text/csv;charset=utf-8"});
     var url = URL.createObjectURL(blob);
