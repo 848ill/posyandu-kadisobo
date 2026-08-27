@@ -859,7 +859,8 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
 
     document.getElementById("count").textContent =
       state.kids.length ? (q ? kids.length + " dari " + state.kids.length : state.kids.length + " anak") : "";
-    document.getElementById("banner").hidden = !(state.sample && state.kids.length);
+      
+    // Baris banner dihapus dari sini karena elemen HTML-nya sudah tidak ada
 
     renderRekap();
 
@@ -867,7 +868,7 @@ svg.chart circle:nth-of-type(n+5){animation-delay:.54s}
     el.classList.toggle("nofx", q.length > 0);
     if(!kids.length){
       el.innerHTML = '<div class="empty"><b>' +
-        (q ? "Nama itu belum ada" : "Belum ada anak terdaftar") + "</b>" +
+        (q ? "Nama itu belum ada" : "Belum ada anak terdaftar") + "</b><br>" +
         (q ? "Periksa ejaannya, atau daftarkan anak baru." : "Tekan Tambah anak untuk mendaftarkan yang pertama.") +
         "</div>";
       return;
